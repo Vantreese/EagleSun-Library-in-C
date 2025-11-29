@@ -1,0 +1,92 @@
+OBJS = \
+char2hex.o \
+choosec.o \
+create_int32_t.o create_rawdata_t.o create_real64_t.o \
+dln_add.o dln_addsorted.o dln_create.o dln_data.o dln_delete.o \
+dln_deleteall.o dln_destroy.o dln_destroyall.o dln_getdata.o \
+dln_getdataoffset.o dln_getdatasorted.o dln_getnode.o dln_getnodesorted.o \
+dln_head.o dln_hide.o dln_matchsz.o dln_modify.o dln_next.o dln_previous.o \
+dln_redata.o dln_renext.o dln_reprevious.o dln_sort.o dln_tail.o \
+esun_pclose.o esun_popen.o esun_sleep.o esun_strncasecmp.o \
+euclidean.o \
+fcompare.o \
+fgetbe.o fgetfield.o fgetle.o fgetmatrix.o fgetsec.o fgetss.o \
+flclose.o flopen.o \
+fputbe.o fputfield.o fputfields.o fputle.o fputmatrix.o fputsec.o fputss.o \
+fullname.o \
+getformget.o getformpost.o getwebdat.o \
+hex2char.o \
+i64toa.o i64toa_crj.o \
+logger.o \
+mem2cmp.o memac.o \
+libmatrix.o \
+ntime.o \
+predictsize.o ptrtoint.o putwebdat.o \
+query.o rnd32k.o round.o \
+setallenv.o \
+setfieldchar.o \
+splitname.o \
+str0catc.o str0chrnul.o str0dup.o str0dupz.o str0lastchr.o str0lastchrnul.o \
+str0rchrnul.o \
+strcatc.o strchrnul.o strlastchr.o strlastchrnul.o \
+struct2int32.o struct2real64.o \
+utoa.o utoa_c0f.o utoa_crj.o \
+webserver.o
+
+RESERVEDOBJS = \
+	lockfile.o
+
+HEADERS = \
+	  $(LOCAL_INCLUDE_DIR)/esundefs.h \
+	  $(LOCAL_INCLUDE_DIR)/esunlib.h \
+	  $(LOCAL_INCLUDE_DIR)/esunweb.h \
+	  $(LOCAL_INCLUDE_DIR)/esundebug.h
+
+HEADERS_SYS = $(LOCAL_INCLUDE_SYS_DIR)/esconfig.h
+
+esunlib : $(LIBESUN)
+
+$(LIBESUN) : $(OBJS)
+	ar rv $(LIBESUN) $(OBJS)
+	ranlib $(LIBESUN)
+
+# Required by DMAKE.
+.c.o :
+	$(CC) $(CFLAGS) -c $*.c
+
+install : make_dirs copy_files
+
+make_dirs : $(ESUN_LIB_DIR) $(ESUN_INCLUDE_DIR) $(ESUN_INCLUDE_SYS_DIR)
+
+$(ESUN_LIB_DIR) :
+	$(MAKEDIR) $(ESUN_LIB_DIR)
+
+$(ESUN_INCLUDE_DIR) :
+	$(MAKEDIR) $(ESUN_INCLUDE_DIR)
+
+$(ESUN_INCLUDE_SYS_DIR) :
+	$(MAKEDIR) $(ESUN_INCLUDE_SYS_DIR)
+
+copy_files : $(ESUN_LIB_DIR)/$(LIBESUN) $(ESUN_INCLUDE_DIR)/esundefs.h $(ESUN_INCLUDE_DIR)/esunlib.h $(ESUN_INCLUDE_DIR)/esunweb.h $(ESUN_INCLUDE_SYS_DIR)/esconfig.h $(ESUN_INCLUDE_DIR)/esundebug.h
+
+$(ESUN_LIB_DIR)/$(LIBESUN) : $(LIBESUN)
+	$(INSTALL) $(LIBESUN) $(ESUN_LIB_DIR)
+
+$(ESUN_INCLUDE_DIR)/esundefs.h : $(LOCAL_INCLUDE_DIR)/esundefs.h
+	$(INSTALL) $(LOCAL_INCLUDE_DIR)/esundefs.h $(ESUN_INCLUDE_DIR)
+
+$(ESUN_INCLUDE_DIR)/esunlib.h : $(LOCAL_INCLUDE_DIR)/esunlib.h
+	$(INSTALL) $(LOCAL_INCLUDE_DIR)/esunlib.h $(ESUN_INCLUDE_DIR)
+
+$(ESUN_INCLUDE_DIR)/esunweb.h : $(LOCAL_INCLUDE_DIR)/esunweb.h
+	$(INSTALL) $(LOCAL_INCLUDE_DIR)/esunweb.h $(ESUN_INCLUDE_DIR)
+
+$(ESUN_INCLUDE_SYS_DIR)/esconfig.h : $(LOCAL_INCLUDE_SYS_DIR)/esconfig.h
+	$(INSTALL) $(LOCAL_INCLUDE_SYS_DIR)/esconfig.h $(ESUN_INCLUDE_SYS_DIR)
+
+$(ESUN_INCLUDE_DIR)/esundebug.h : $(LOCAL_INCLUDE_DIR)/esundefs.h
+	$(INSTALL) $(LOCAL_INCLUDE_DIR)/esundebug.h $(ESUN_INCLUDE_DIR)
+
+clean :
+	rm -f *.a *.o *.so.*
+
